@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="OauthTestSuite" >
+	<listeners>
+        <listener class-name="helperfunctions.TestListener"/>
+    </listeners>
+    <test name="OauthTest">
+        <classes>
+            <class name="tests.OauthExampleTests"/>
+        </classes>
+    </test>
+</suite>

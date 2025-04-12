@@ -1,23 +1,25 @@
 package tests;
-import java.util.ArrayList;
+
+import java.util.List;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import io.restassured.path.json.JsonPath;
-import io.restassured.response.Response;
-import testmethods.OauthExampleTestMethods;
 import helperfunctions.HelperFunctions;
+import pojo.responses.getcourse.Course;
+import pojo.responses.getcourse.GetCoursesInfo;
+import testmethods.OauthExampleTestMethods;
 public class OauthExampleTests {
 	@Test
 	public void OauthTokenTest() {
 		String oauthToken = OauthExampleTestMethods.getAccessToken();
-
-		Response getCourseDetails = OauthExampleTestMethods.getCourseDetails(oauthToken);
-		JsonPath getCourseDetailsJson = HelperFunctions.convertRestAssuredResponseToJson(getCourseDetails);
+		GetCoursesInfo coursesInfo = OauthExampleTestMethods.getCoursesInfo(oauthToken).as(GetCoursesInfo.class);		
+		List<Course> apiCourses = coursesInfo.getCourses().getApi();
+		String coursePrice = OauthExampleTestMethods.getCoursePrice("SoapUI Webservices testing", apiCourses);
 		
-		ArrayList<String> webAutomationCourses = getCourseDetailsJson.getJsonObject("courses.webAutomation");
-		Assert.assertTrue(!webAutomationCourses.isEmpty(), "No Web Automation Courses as Not Expected");
-		HelperFunctions.logToReportAndLog4j(String.format("There are %d Web Automation Courses", webAutomationCourses.size()));
+		Assert.assertEquals("40", coursePrice, 
+				String.format("'Soap Webservices testing' API Automation Course price is '%s' as Not Expected", coursePrice));
+		HelperFunctions.logToReportAndLog4j(
+				String.format("'Soap Webservices testing' API Automation Course price is '40' as Expected"));
 	}
 }

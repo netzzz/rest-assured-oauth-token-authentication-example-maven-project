@@ -2,8 +2,12 @@ package testmethods;
 
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
+
+import java.util.List;
+
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import pojo.responses.getcourse.Course;
 
 public class OauthExampleTestMethods {
 	private static String baseURIToken = "https://rahulshettyacademy.com";
@@ -23,12 +27,21 @@ public class OauthExampleTestMethods {
 		return getTokenResponseJson.getString("access_token");
 	}
 	
-	public static Response getCourseDetails(String accessToken) {
+	public static Response getCoursesInfo(String accessToken) {
 		RestAssured.baseURI = baseURIToken;
 		
 		return given().queryParam("access_token", accessToken)
 				.when().get("oauthapi/getCourseDetails")
 				.then().extract().response();
+	}
+	
+	public static String getCoursePrice(String courseTitle, List<Course> coursesList) {
+		for(Course course : coursesList) {
+			if(course.getCourseTitle().equals(courseTitle)) {
+				return course.getPrice();
+			}
+		}
+		return String.format("Course %s doesn't exist in provided collection", courseTitle);
 	}
 	
 	
